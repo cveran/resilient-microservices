@@ -1,0 +1,104 @@
+spring:
+  application:
+    name: resilience-service
+  
+  # Jackson configuration for better JSON handling
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
+
+# Server configuration
+server:
+  port: 8080
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 10
+    connection-timeout: 20000
+    max-connections: 10000
+
+# HTTP client configuration
+resilience:
+  http:
+    connect-timeout: 5000
+    read-timeout: 10000
+
+# Actuator configuration for monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,caches
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+
+# Resilience4j configuration
+resilience4j:
+  # Circuit Breaker configuration
+  circuitbreaker:
+    instances:
+      productService:
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+        record-exceptions:
+          - java.io.IOException
+          - java.net.SocketTimeoutException
+          - org.springframework.web.client.ResourceAccessException
+      userService:
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+
+  # Retry configuration
+  retry:
+    instances:
+      productService:
+        max-attempts: 3
+        wait-duration: 1s
+        exponential-backoff-multiplier: 2
+        retry-exceptions:
+          - java.io.IOException
+          - java.net.SocketTimeoutException
+      userService:
+        max-attempts: 3
+        wait-duration: 1s
+        exponential-backoff-multiplier: 2
+
+  # Time limiter configuration for async operations
+  timelimiter:
+    instances:
+      productService:
+        timeout-duration: 3s
+        cancel-running-future: true
+
+  # Rate limiter configuration
+  ratelimiter:
+    instances:
+      productService:
+        limit-for-period: 100
+        limit-refresh-period: 1s
+        timeout-duration: 0s
+      userService:
+        limit-for-period: 100
+        limit-refresh-period: 1s
+        timeout-duration: 0s
+
+# Logging configuration
+logging:
+  level:
+    com.example.resilience: INFO
+    io.github.resilience4j: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
