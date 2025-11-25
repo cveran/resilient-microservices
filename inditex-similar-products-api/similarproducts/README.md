@@ -271,6 +271,8 @@ curl http://localhost:5000/product/6/similar
 }
 ```
 
+
+
 #### ⚠️ **ProductId inválido (400)**
 
 ```bash
@@ -287,6 +289,18 @@ curl http://localhost:5000/product//similar
   "path": "/product/similar"
 }
 ```
+
+### ✨ Resultados de todos los Endpoints de la nueva API (Endpoint Disponibles en postman collection)
+
+| Endpoint NEW API                           | Response | Time  | Status |
+|--------------------------------------------|-|-------|--------|
+| **http://localhost:5000/product/1/similar** | [{"id":"2","name":"Dress","price":19.99,"availability":true},{"id":"3","name":"Blazer","price":29.99,"availability":false},{"id":"4","name":"Boots","price":39.99,"availability":true}]| 7 ms  | 200    |
+| **http://localhost:5000/product/2/similar** | [{"id":"3","name":"Blazer","price":29.99,"availability":false},{"id":"100","name":"Trousers","price":49.99,"availability":false},{"id":"1000","name":"Coat","price":89.99,"availability":true}]| 7 ms  | 200    |
+| **http://localhost:5000/product/3/similar** | [{"id":"100","name":"Trousers","price":49.99,"availability":false},{"id":"1000","name":"Coat","price":89.99,"availability":true}] | 10 ms | 200    |
+| **http://localhost:5000/product/4/similar** | [{"id":"1","name":"Shirt","price":9.99,"availability":true},{"id":"2","name":"Dress","price":19.99,"availability":true}] | 5 ms  | 200    |
+| **http://localhost:5000/product/5/similar** | [{"id":"1","name":"Shirt","price":9.99,"availability":true},{"id":"2","name":"Dress","price":19.99,"availability":true}] | 6 ms  | 200    |
+| **http://localhost:5000/product/6/similar** | {"timestamp":"2025-11-25T11:46:30.3929413","status":404,"error":"Not Found","message":"Product not found: 6","path":"/product/6/similar"} | 10 ms | 404    |
+| **http://localhost:5000/product//similar** | {"timestamp":"2025-11-25T11:53:53.9973492","status":400,"error":"Bad Request","message":"Product ID is required","path":"/product/%20/similar"} | 16 ms | 400    |
 
 ### Comportamiento con Productos Fallidos
 
